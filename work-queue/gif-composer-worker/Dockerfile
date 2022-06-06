@@ -4,9 +4,9 @@ WORKDIR /app
 RUN apt-get update
 RUN apt-get -y install ffmpeg
 COPY gif-composer.sh /
-COPY ../extract-resize-worker/palette.png /
+# COPY ../extract-resize-worker/palette.png /
 
 RUN chmod +x /gif-composer.sh
 
 ENTRYPOINT ["/gif-composer.sh"]
-CMD $1 $2
+# CMD $1
