@@ -1,4 +1,4 @@
-*.png
-*.mp4
-*.gif
-__pycache__/
+# *.png
+# *.mp4
+# *.gif
+# __pycache__/
