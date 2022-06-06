@@ -8,4 +8,4 @@ COPY extract-frames.sh /
 RUN chmod +x /extract-frames.sh
 
 ENTRYPOINT ["/extract-frames.sh"]
-CMD $1 $2
+CMD $1
