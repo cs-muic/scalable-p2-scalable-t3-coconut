@@ -4,6 +4,7 @@ WORKDIR /app
 RUN apt-get update
 RUN apt-get -y install ffmpeg
 COPY extract-frames.sh /
+COPY frames/ /
 
 RUN chmod +x /extract-frames.sh
 
