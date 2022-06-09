@@ -50,13 +50,21 @@ def watch_queue(redis_conn, queue_name, callback_func, timeout=30):
 
 
 def execute_extract(log, input):
-    video = input.get('video')
-    if video:
-        os.system(f"./extract-frames.sh {input}")
-        log.info('Done')
-    else:
-        log.info('No video given.')
+    # video = input.get('video')
+    # if video:
+    #     os.system(f"./extract-frames.sh {input}")
+    #     log.info('Done')
+    # else:
+    #     log.info('No video given.')
 
+    number = input.get('number')
+    if number:
+        number = int(number)
+        log.info('Factoring %d', number)
+        factors = [trial for trial in range(1, number+1) if number % trial == 0] 
+        log.info('Done, factors = %s', factors)
+    else:
+        log.info('No number given.')
 
 def main():
     LOG.info('Starting a worker...')

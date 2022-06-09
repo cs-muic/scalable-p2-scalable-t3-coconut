@@ -20,3 +20,36 @@ services:
       - REDIS_QUEUE=redis
     ports:
       - '5000:5000'
+  # extract-resize-worker:
+  #   build:
+  #     context: extract-resize-worker
+  #   depends_on:
+  #     - "redis"
+  #   environment:
+  #     - REDIS_QUEUE=redis
+  # gif-composer-worker:
+  #   build:
+  #     context: gif-composer-worker
+  #   depends_on:
+  #     - "redis"
+  #   environment:
+  #     - REDIS_QUEUE=redis
+  # queue-extract:
+  #   build:
+  #     context: queue-extract
+  #   depends_on:
+  #     - "redis"
+  #   environment:
+  #     - REDIS_QUEUE=redis
+  #   ports:
+  #     - '5000:5000'
+  # queue-composer:
+  #   build:
+  #     context: queue-composer
+  #   depends_on:
+  #     - "redis"
+  #   environment:
+  #     - REDIS_QUEUE=redis
+  #   ports:
+  #     - '5000:5000'
+  
