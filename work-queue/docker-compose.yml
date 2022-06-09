@@ -4,13 +4,29 @@ services:
     image: redis:5-alpine
     ports:
       - '6379:6379'
-  extract-resize-worker:
+  worker:
     build:
-      context: extract-resize-worker
+      context: worker
     depends_on:
       - "redis"
     environment:
       - REDIS_QUEUE=redis
+  queue-wrapper:
+    build:
+      context: queue-wrapper
+    depends_on:
+      - "redis"
+    environment:
+      - REDIS_QUEUE=redis
+    ports:
+      - '5000:5000'
+  # extract-resize-worker:
+  #   build:
+  #     context: extract-resize-worker
+  #   depends_on:
+  #     - "redis"
+  #   environment:
+  #     - REDIS_QUEUE=redis
   # gif-composer-worker:
   #   build:
   #     context: gif-composer-worker
@@ -18,15 +34,15 @@ services:
   #     - "redis"
   #   environment:
   #     - REDIS_QUEUE=redis
-  queue-extract:
-    build:
-      context: queue-extract
-    depends_on:
-      - "redis"
-    environment:
-      - REDIS_QUEUE=redis
-    ports:
-      - '5001:5000'
+  # queue-extract:
+  #   build:
+  #     context: queue-extract
+  #   depends_on:
+  #     - "redis"
+  #   environment:
+  #     - REDIS_QUEUE=redis
+  #   ports:
+  #     - '5000:5000'
   # queue-composer:
   #   build:
   #     context: queue-composer
@@ -36,4 +52,4 @@ services:
   #     - REDIS_QUEUE=redis
   #   ports:
   #     - '5000:5000'
-
+  
