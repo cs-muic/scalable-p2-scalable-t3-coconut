@@ -5,7 +5,7 @@
 from flask import Flask, abort, jsonify, request
 from rq.job import Job
 
-from .functions import some_long_function
+from .functions import some_long_function, execute_compose
 from .redis_resc import redis_conn, redis_queue
 
 app = Flask(__name__)
@@ -41,7 +41,7 @@ def enqueue():
     if request.method == "POST":
         data = request.json
 
-    job = redis_queue.enqueue(some_long_function, data)
+    job = redis_queue.enqueue(execute_compose, data)
     return jsonify({"job_id": job.id})
 
 
