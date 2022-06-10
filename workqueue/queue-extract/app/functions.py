@@ -1,6 +1,8 @@
 """Define functions to use in redis queue."""
 
 import time
+import os
+import subprocess
 
 from rq import get_current_job
 
@@ -9,7 +11,7 @@ def some_long_function(some_input):
     """An example function for redis queue."""
     job = get_current_job()
     # print(job)
-    time.sleep(1)
+    time.sleep(10)
 
     return {
         "job_id": job.id,
@@ -17,4 +19,17 @@ def some_long_function(some_input):
         "job_started_at": job.started_at.isoformat(),
         "input": some_input,
         "result": some_input,
+    }
+
+def execute_extract(input):
+    job = get_current_job()
+    pwd = os.getcwd()
+    video = input.get('video')
+    subprocess.Popen([f'{pwd}/app/extract-frames.sh', f'{pwd}/app/{video}'])
+    return {
+        "job_id": job.id,
+        "job_enqueued_at": job.enqueued_at.isoformat(),
+        "job_started_at": job.started_at.isoformat(),
+        "input": input,
+        "result": input,
     }

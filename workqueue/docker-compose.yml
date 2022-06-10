@@ -14,13 +14,13 @@ services:
       - REDIS_PORT=6379
     ports:
       - "5001:5000"
-  extract-resize-worker:
-    build:
-      context: extract-resize-worker
-    depends_on:
-      - "redis"
-    environment:
-      - REDIS_QUEUE=redis
+  # extract-resize-worker:
+  #   build:
+  #     context: extract-resize-worker
+  #   depends_on:
+  #     - "redis"
+  #   environment:
+  #     - REDIS_QUEUE=redis
   # queue-wrapper:
   #   build:
   #     context: queue-wrapper
