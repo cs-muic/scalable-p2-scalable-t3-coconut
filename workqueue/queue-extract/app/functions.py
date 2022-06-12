@@ -7,7 +7,7 @@ import subprocess
 from rq import get_current_job
 
 from minio import Minio
-
+from pathlib import Path
 
 
 
@@ -37,6 +37,23 @@ def execute_extract(vdo_input):
     )
     client.fget_object("video", str(video), f'{pwd}/input_vdo/{video}')
     subprocess.Popen([f'{pwd}/app/extract-frames.sh', f'{pwd}/input_vdo/{video}'])
+    time.sleep(20)
+
+    directory = f'{pwd}/frames'
+    # file = "frame-001.png"
+
+    # client.fput_object("frames", str(file), f'{directory}/{file}')
+ 
+    # iterate over files in
+    # that directory
+    files = Path(directory).glob('*')
+    num = 1
+    for file in files:
+        # print(file)
+        client.fput_object("frames", f"frame-{num}.png", str(file))
+        num += 1
+
+
     return {
         "job_id": job.id,
         "job_enqueued_at": job.enqueued_at.isoformat(),
