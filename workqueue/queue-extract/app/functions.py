@@ -37,7 +37,7 @@ def execute_extract(vdo_input):
     )
     client.fget_object("video", str(video), f'{pwd}/input_vdo/{video}')
     subprocess.Popen([f'{pwd}/app/extract-frames.sh', f'{pwd}/input_vdo/{video}'])
-    time.sleep(20)
+    # time.sleep(20)
 
     directory = f'{pwd}/frames'
     # file = "frame-001.png"

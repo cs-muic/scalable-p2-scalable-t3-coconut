@@ -1,3 +1,3 @@
 #!/bin/sh
 
-convert -delay 10 -loop 0 $(pwd)/frames/*.png $1
+convert -delay 10 -loop 0 $(pwd)/incoming-frames/*.png $1
