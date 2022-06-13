@@ -80,23 +80,12 @@ def get_status():
     return jsonify({"job_status": job.result})
 
 
-@app.route("/enqueue_bucket")
+@app.route("/enqueue_bucket", methods=["POST"])
 def enqueue_bucket():
-    bucket_name = request.args["bucket"]
-
-    if request.method == "GET":
-        query_param = request.args.get("external_id")
-        if not query_param:
-            abort(
-                404,
-                description=(
-                    "No query parameter external_id passed. "
-                    "Send a value to the external_id query parameter."
-                ),
-            )
-        data = {"external_id": query_param}
     if request.method == "POST":
         data = request.json
+
+    bucket_name = data.get('bucket')
 
     client = Minio(
         "127.0.0.1:7000",
@@ -104,25 +93,29 @@ def enqueue_bucket():
         secret_key="minio123",
         secure=False
     )
+
+    pwd = os.getcwd()
     
     for item in client.list_objects(bucket_name,recursive=True):
         client.fget_object(bucket_name,item.object_name,f'{pwd}/input-vdo/{item.object_name}')
     
-    pwd = os.getcwd()
-    directory = f'{pwd}/videos'
+    
+    directory = f'{pwd}/input-vdo'
 
     all_jobs = {}
 
     files = Path(directory).glob('*')
     for file in files:
+        video = str(file).split("/")[-1]
         data = {
-            "video" : file, 
-            "gif": "${file}".split(".")[0] + ".gif"
+            "video" : video, 
+            "gif": video.split(".")[0] + ".gif"
         }
         job = redis_queue_ex.enqueue(execute_extract, data)
         all_jobs[job.id] = job.get_status()
 
     return jsonify(all_jobs)
+
 
 
 
