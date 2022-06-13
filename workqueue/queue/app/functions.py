@@ -24,8 +24,8 @@ def execute_extract(vdo_input):
         secret_key="minio123",
         secure=False
     )
-    client.fget_object("video", str(video), f'{pwd}/input_vdo/{video}')
-    work = subprocess.Popen([f'{pwd}/app/extract-frames.sh', f'{pwd}/input_vdo/{video}'])
+    client.fget_object("video", str(video), f'{pwd}/input-vdo/{video}')
+    work = subprocess.Popen([f'{pwd}/app/extract-frames.sh', f'{pwd}/input-vdo/{video}'])
     # time.sleep(20)
     work.wait()
 
