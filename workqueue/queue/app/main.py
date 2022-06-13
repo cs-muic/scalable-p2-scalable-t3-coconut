@@ -6,6 +6,9 @@ import json
 from time import sleep
 from flask import Flask, abort, jsonify, request
 from rq.job import Job
+from minio import Minio
+from pathlib import Path
+import os
 
 from .functions import execute_extract, log_stream, job_com
 from .redis_resc import redis_conn, redis_queue_ex, redis_queue_log
@@ -50,6 +53,7 @@ def enqueue():
 
     # job_con = redis_queue_com.enqueue(execute_compose, data)
         
+
     
     return jsonify({"job_id": job_ex.id})
 
@@ -78,7 +82,8 @@ def get_status():
 
 @app.route("/enqueue_bucket")
 def enqueue_bucket():
-    bucket = request.args["bucket"]
+    bucket_name = request.args["bucket"]
+
     if request.method == "GET":
         query_param = request.args.get("external_id")
         if not query_param:
@@ -93,8 +98,31 @@ def enqueue_bucket():
     if request.method == "POST":
         data = request.json
 
-    job_ex = redis_queue_ex.enqueue(execute_extract, data)
+    client = Minio(
+        "127.0.0.1:7000",
+        access_key="minio",
+        secret_key="minio123",
+        secure=False
+    )
+    
+    for item in client.list_objects(bucket_name,recursive=True):
+        client.fget_object(bucket_name,item.object_name,f'{pwd}/input-vdo/{item.object_name}')
+    
+    pwd = os.getcwd()
+    directory = f'{pwd}/videos'
 
+    all_jobs = {}
+
+    files = Path(directory).glob('*')
+    for file in files:
+        data = {
+            "video" : file, 
+            "gif": "${file}".split(".")[0] + ".gif"
+        }
+        job = redis_queue_ex.enqueue(execute_extract, data)
+        all_jobs[job.id] = job.get_status()
+
+    return jsonify(all_jobs)
 
 
 
