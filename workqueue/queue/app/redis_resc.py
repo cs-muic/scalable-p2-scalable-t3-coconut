@@ -9,6 +9,7 @@ redis_conn = redis.Redis(
     port=os.getenv("REDIS_PORT", "6379"),
     password=os.getenv("REDIS_PASSWORD", ""),
 )
+redis_conn.mset({"latest_job_id": 1})
 
 redis_queue_ex = Queue("extract",connection=redis_conn)
 redis_queue_com = Queue("compose",connection=redis_conn)

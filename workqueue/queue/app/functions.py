@@ -14,7 +14,7 @@ from pathlib import Path
 from rq.job import Job
 from .redis_resc import redis_queue_com, redis_queue_log, redis_conn
 
-from .main import job_ex
+from .main import current_job_id
 
 client = Minio(
     "127.0.0.1:7000",
@@ -24,9 +24,10 @@ client = Minio(
 )
 
 def execute_extract(vdo_input):
+
     job = get_current_job()
     log_data = {
-        "id": job.id,
+        "id": current_job_id,
         "vdo_name": vdo_input.get('video'),
         "status": "submitted"
         }
@@ -52,18 +53,18 @@ def execute_extract(vdo_input):
 
     if job.get_status() == "failed":
         log_data = {
-            "id": job.id, 
+            "id": current_job_id, 
             "vdo_name": vdo_input.get('video'),
             "status": "failed"
             }
         redis_queue_log.enqueue(log_stream, log_data)
     else:
         log_data = {
-            "id": job.id, 
+            "id": current_job_id,
             "vdo_name": vdo_input.get('video'),
             "status": "extracted"
             }
-        redis_queue_log.enqueue(log_stream, log_data) 
+        redis_queue_log.enqueue(log_stream, log_data)
 
     redis_queue_com.enqueue(execute_compose, vdo_input)
     # redis_queue_log.enqueue() = 
@@ -95,14 +96,14 @@ def execute_compose(gif_input):
     
     if job.get_status() == "failed":
         log_data = {
-            "id": job.id, 
+            "id": current_job_id, 
             "vdo_name": gif_input.get('video'),
             "status": "failed"
             }
         redis_queue_log.enqueue(log_stream, log_data)
     else:
         log_data = {
-            "id": job.id, 
+            "id": current_job_id, 
             "vdo_name": gif_input.get('video'),
             "status": "composed"
             }
@@ -117,30 +118,7 @@ def execute_compose(gif_input):
     }
 
 
-# def log_stream(job_ex: Job, job_com: Job):
-#     # log = {job_ex.id: "extracting"}
-#     if (job_ex.get_status() == "finished") and (job_com.get_status != "failed"):
-#         # log.values = "composing"
-#         return {job_ex.id: "composing"}
-#     elif (job_ex.get_status() == "finished") and (job_com.get_status == "finished"):
-#         return {job_ex.id: "finished"}
-#     elif (job_ex.get_status() == "failed") or (job_com.get_status == "failed"):
-#         return {job_ex.id: "failed"}
-#     return {job_ex.id: "extracting"}
-
 def log_stream(log_data):
-    # log = {job_ex.id: "extracting"}
-
-    # job_ex_status = input_id.get("job_ex")
-    # job_com_status = input_id.get("job_com")
-    # if (job_ex_status == "finished") and (job_com_status != "failed"):
-    #     # log.values = "composing"
-    #     return "composed"
-    # elif (job_ex_status == "finished") and (job_com_status == "finished"):
-    #     return "finished"
-    # elif (job_ex_status == "failed") or (job_com_status == "failed"):
-    #     return "failed"
-    # return "extracted"
     return {
         "job_id" : log_data.get('id'),
         "vid_name": log_data.get('vdo_name'),
