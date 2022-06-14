@@ -14,9 +14,8 @@ from pathlib import Path
 from rq.job import Job
 from .redis_resc import redis_queue_com, redis_queue_log, redis_conn
 
-# from .main import current_job_id
 
-current_job_id = redis_conn.get("latest_job_id")
+
 
 client = Minio(
     "127.0.0.1:7000",
@@ -29,7 +28,6 @@ def execute_extract(vdo_input):
 
     job = get_current_job()
     log_data = {
-        "id": current_job_id,
         "vdo_name": vdo_input.get('video'),
         "status": "submitted"
         }
@@ -55,7 +53,6 @@ def execute_extract(vdo_input):
 
     if job.get_status() == "failed":
         log_data = {
-            "id": current_job_id, 
             "vdo_name": vdo_input.get('video'),
             "status": "failed"
             }
@@ -63,7 +60,6 @@ def execute_extract(vdo_input):
         redis_conn.mset({"log_job_id": log_job.id})
     else:
         log_data = {
-            "id": current_job_id,
             "vdo_name": vdo_input.get('video'),
             "status": "extracted"
             }
@@ -101,7 +97,6 @@ def execute_compose(gif_input):
     
     if job.get_status() == "failed":
         log_data = {
-            "id": current_job_id, 
             "vdo_name": gif_input.get('video'),
             "status": "failed"
             }
@@ -109,7 +104,6 @@ def execute_compose(gif_input):
         redis_conn.mset({"log_job_id": log_job.id})
     else:
         log_data = {
-            "id": current_job_id, 
             "vdo_name": gif_input.get('video'),
             "status": "composed"
             }
@@ -127,8 +121,7 @@ def execute_compose(gif_input):
 
 def log_stream(log_data):
     return {
-        "job_id" : log_data.get('id'),
-        "vid_name": log_data.get('vdo_name'),
-        "job_status": log_data.get('status')
+        "vid_name": str(log_data.get('vdo_name')),
+        "job_status": str(log_data.get('status'))
     }
 

@@ -24,7 +24,6 @@ client = Minio(
     secure=False
 )
 
-current_job_id = redis_conn.get("latest_job_id")
 
 @app.errorhandler(404)
 def resource_not_found(exception):
@@ -56,7 +55,6 @@ def enqueue():
     if request.method == "POST":
         data = request.json
 
-    redis_conn.mset({"latest_job_id": current_job_id+1})
     job_ex = redis_queue_ex.enqueue(execute_extract, data)
     #= submited video
     # job_con = redis_queue_com.enqueue(execute_compose, data)    
@@ -87,8 +85,8 @@ def get_status():
     # data = jsonify({"job_ex":job_ex.get_status(), "job_com":job_com.get_status()})
     # job = redis_queue_log.enqueue(log_stream)
     log_job_id = redis_conn.get('log_job_id')
-    job = Job.fetch( log_job_id, connection=redis_conn)
-    return jsonify({"job_status": job.result})
+    job = Job.fetch(str(log_job_id).split("'")[1], connection=redis_conn)
+    return job.result
 
 
 @app.route("/enqueue_bucket", methods=["POST"])
