@@ -154,5 +154,23 @@ def get_all_gif():
 
     return jsonify(all_gif)
 
+@app.route("/delete_all_gif")
+def delete_all_gif():
+
+    for item in client.list_objects("gif",recursive=True):
+        if item.object_name.endswith(".gif") :
+            client.remove_object("gif", item)
+
+    return jsonify({})
+
+@app.route("/delete_gif")
+def delete_gif():
+    if request.method == "POST":
+        data = request.json
+
+    gif_name = data.get('gif')
+    client.remove_object("gif", gif_name)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
