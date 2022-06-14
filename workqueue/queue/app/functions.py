@@ -3,6 +3,7 @@
 import time
 import os
 import subprocess
+from click import echo
 
 from rq import get_current_job
 
@@ -38,9 +39,10 @@ def execute_extract(vdo_input):
     # that directory
     files = Path(directory).glob('*')
     num = 1
+    dir_name = str(video).split(".")[0]
     for file in files:
         # print(file)
-        client.fput_object("frames", f"frame-{num}.png", str(file))
+        client.fput_object("frames", f"{dir_name}/frame-{num}.png", str(file))
         num += 1
 
     job_com = redis_queue_com.enqueue(execute_compose, vdo_input)
@@ -68,10 +70,12 @@ def execute_compose(gif_input):
         secure=False
     )
 
+    dir_name = str(gif).split(".")[0]
     for item in client.list_objects("frames",recursive=True):
         client.fget_object("frames",item.object_name,f'{pwd}/incoming-frames/{item.object_name}')
+        # subprocess.Popen(['echo', f"{item.object_name}"])
 
-    work = subprocess.Popen([f'{pwd}/app/gif-composer.sh', f'{pwd}/output-gif/{gif}'])
+    work = subprocess.Popen([f'{pwd}/app/gif-composer.sh', dir_name, f'{pwd}/output-gif/{gif}'])
     work.wait()
 
 
