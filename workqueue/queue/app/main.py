@@ -86,7 +86,8 @@ def get_status():
     # video_name = current_data.get('video')
     # data = jsonify({"job_ex":job_ex.get_status(), "job_com":job_com.get_status()})
     # job = redis_queue_log.enqueue(log_stream)
-    job = Job.fetch(current_job_id, connection=redis_conn)
+    log_job_id = redis_conn.get('log_job_id')
+    job = Job.fetch( log_job_id, connection=redis_conn)
     return jsonify({"job_status": job.result})
 
 

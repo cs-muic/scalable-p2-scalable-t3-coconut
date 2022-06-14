@@ -33,7 +33,8 @@ def execute_extract(vdo_input):
         "vdo_name": vdo_input.get('video'),
         "status": "submitted"
         }
-    redis_queue_log.enqueue(log_stream, log_data)
+    log_job = redis_queue_log.enqueue(log_stream, log_data)
+    redis_conn.mset({"log_job_id": log_job.id})
 
     pwd = os.getcwd()
     video = vdo_input.get('video')
@@ -49,7 +50,6 @@ def execute_extract(vdo_input):
     num = 1
     dir_name = str(video).split(".")[0]
     for file in files:
-        # print(file)
         client.fput_object("frames", f"{dir_name}/frame-{num}.png", str(file))
         num += 1
 
@@ -59,14 +59,17 @@ def execute_extract(vdo_input):
             "vdo_name": vdo_input.get('video'),
             "status": "failed"
             }
-        redis_queue_log.enqueue(log_stream, log_data)
+        log_job = redis_queue_log.enqueue(log_stream, log_data)
+        redis_conn.mset({"log_job_id": log_job.id})
     else:
         log_data = {
             "id": current_job_id,
             "vdo_name": vdo_input.get('video'),
             "status": "extracted"
             }
-        redis_queue_log.enqueue(log_stream, log_data)
+        log_job = redis_queue_log.enqueue(log_stream, log_data)
+        redis_conn.mset({"log_job_id": log_job.id})
+        # job.result 
 
     redis_queue_com.enqueue(execute_compose, vdo_input)
     # redis_queue_log.enqueue() = 
@@ -102,14 +105,16 @@ def execute_compose(gif_input):
             "vdo_name": gif_input.get('video'),
             "status": "failed"
             }
-        redis_queue_log.enqueue(log_stream, log_data)
+        log_job = redis_queue_log.enqueue(log_stream, log_data)
+        redis_conn.mset({"log_job_id": log_job.id})
     else:
         log_data = {
             "id": current_job_id, 
             "vdo_name": gif_input.get('video'),
             "status": "composed"
             }
-        redis_queue_log.enqueue(log_stream, log_data)
+        log_job = redis_queue_log.enqueue(log_stream, log_data)
+        redis_conn.mset({"log_job_id": log_job.id})
     
     return {
         "job_id": job.id,
@@ -125,5 +130,5 @@ def log_stream(log_data):
         "job_id" : log_data.get('id'),
         "vid_name": log_data.get('vdo_name'),
         "job_status": log_data.get('status')
-        }
+    }
 
