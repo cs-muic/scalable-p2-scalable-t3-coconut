@@ -55,12 +55,10 @@ def enqueue():
         data = request.json
 
     job_ex = redis_queue_ex.enqueue(execute_extract, data)
+    #= submited video
+    # job_con = redis_queue_com.enqueue(execute_compose, data)    
+    # job_ex, job_com
 
-
-    # job_con = redis_queue_com.enqueue(execute_compose, data)
-        
-
-    
     return jsonify({"job_id": job_ex.id})
 
 
@@ -82,7 +80,10 @@ def check_status():
 def get_status():
     # job_ex = Job.fetch(job_ex.id, connection=redis_conn)
     # job_com = Job.fetch(job_com.id, connection=redis_conn)
-    job = redis_queue_log.enqueue(log_stream, {"job_ex":job_ex.get_status, "job_com":job_com.get_status})
+    # {job_id_ex: status}
+    # video_name = current_data.get('video')
+    # data = jsonify({"job_ex":job_ex.get_status(), "job_com":job_com.get_status()})
+    job = redis_queue_log.enqueue(log_stream)
     return jsonify({"job_status": job.result})
 
 
