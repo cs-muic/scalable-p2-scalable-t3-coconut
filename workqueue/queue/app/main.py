@@ -10,8 +10,8 @@ from minio import Minio
 from pathlib import Path
 import os
 
-from .functions import execute_extract, log_stream, job_com
-from .redis_resc import redis_conn, redis_queue_ex, redis_queue_log
+from .functions import execute_extract, log_stream
+from .redis_resc import redis_conn, redis_queue_ex
 
 app = Flask(__name__)
 

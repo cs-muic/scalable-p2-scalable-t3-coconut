@@ -14,7 +14,9 @@ from pathlib import Path
 from rq.job import Job
 from .redis_resc import redis_queue_com, redis_queue_log, redis_conn
 
-from .main import current_job_id
+# from .main import current_job_id
+
+current_job_id = redis_conn.get("latest_job_id")
 
 client = Minio(
     "127.0.0.1:7000",
