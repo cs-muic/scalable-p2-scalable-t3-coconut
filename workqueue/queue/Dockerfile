@@ -6,6 +6,7 @@ COPY requirements.txt /app/requirements.txt
 
 # Install all the requirements
 RUN pip install -r /app/requirements.txt
+RUN pip install ffmpeg-python
 
 # Copy everthing from . to /app inside the 'box'
 COPY . /app
@@ -16,5 +17,6 @@ WORKDIR /app
 #CMD ["gunicorn", "-b 0.0.0.0:5000", "-w 2", "main:app"]
 
 
-ENV FLASK_APP=app.main:app
-CMD ["flask", "run", "--host", "0.0.0.0"]
+# ENV FLASK_APP=app.main:app
+# CMD ["flask", "run", "--host", "0.0.0.0"]
+CMD ["export", "FLASK_APP=app.main:app", "&&", "flask", "run", "--reload"]
