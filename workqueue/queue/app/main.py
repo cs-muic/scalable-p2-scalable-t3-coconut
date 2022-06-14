@@ -2,6 +2,7 @@
 
 # pylint: disable=broad-except
 
+from crypt import methods
 import json
 from time import sleep
 from flask import Flask, abort, jsonify, request
@@ -159,17 +160,18 @@ def delete_all_gif():
 
     for item in client.list_objects("gif",recursive=True):
         if item.object_name.endswith(".gif") :
-            client.remove_object("gif", item)
+            client.remove_object("gif", item.object_name)
 
     return jsonify({})
 
-@app.route("/delete_gif")
+@app.route("/delete_gif", methods=["POST"])
 def delete_gif():
     if request.method == "POST":
         data = request.json
 
     gif_name = data.get('gif')
     client.remove_object("gif", gif_name)
+    return jsonify({})
 
 
 if __name__ == "__main__":
