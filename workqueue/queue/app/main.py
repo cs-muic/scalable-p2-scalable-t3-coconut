@@ -17,6 +17,12 @@ app = Flask(__name__)
 
 job_ex = Job
 
+client = Minio(
+    "127.0.0.1:7000",
+    access_key="minio",
+    secret_key="minio123",
+    secure=False
+)
 
 @app.errorhandler(404)
 def resource_not_found(exception):
@@ -87,13 +93,6 @@ def enqueue_bucket():
 
     bucket_name = data.get('bucket')
 
-    client = Minio(
-        "127.0.0.1:7000",
-        access_key="minio",
-        secret_key="minio123",
-        secure=False
-    )
-
     pwd = os.getcwd()
     
     for item in client.list_objects(bucket_name,recursive=True):
@@ -117,8 +116,6 @@ def enqueue_bucket():
     return jsonify(all_jobs)
 
 
-
-
 @app.route("/get_result")
 def get_result():
     """Takes a job_id and returns the job's result."""
@@ -137,9 +134,23 @@ def get_result():
     return jsonify(job.result)
 
 
+@app.route("/all_gif", methods=["POST"])
+def get_all_gif():
+    
+    if request.method == "POST":
+        data = request.json
 
+    bucket_name = data.get('bucket')
+    all_gif = {}
 
+    count = 1
 
+    for item in client.list_objects(bucket_name,recursive=True):
+        if item.object_name.endswith(".gif") :
+            all_gif[f"{count}"] = f"{item.object_name}"
+            count +=1
+
+    return jsonify(all_gif)
 
 if __name__ == "__main__":
     app.run(debug=True)

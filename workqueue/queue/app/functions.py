@@ -14,17 +14,18 @@ from .redis_resc import redis_queue_com
 
 job_com = Job
 
+client = Minio(
+    "127.0.0.1:7000",
+    access_key="minio",
+    secret_key="minio123",
+    secure=False
+)
 
 def execute_extract(vdo_input):
     job = get_current_job()
     pwd = os.getcwd()
     video = vdo_input.get('video')
-    client = Minio(
-        "127.0.0.1:7000",
-        access_key="minio",
-        secret_key="minio123",
-        secure=False
-    )
+
     client.fget_object("video", str(video), f'{pwd}/input-vdo/{video}')
     work = subprocess.Popen([f'{pwd}/app/extract-frames.sh', f'{pwd}/input-vdo/{video}'])
     # time.sleep(20)
@@ -46,8 +47,6 @@ def execute_extract(vdo_input):
         num += 1
 
     job_com = redis_queue_com.enqueue(execute_compose, vdo_input)
-    
-
 
     return {
         "job_id": job.id,
@@ -62,13 +61,6 @@ def execute_compose(gif_input):
     job = get_current_job()
     pwd = os.getcwd()
     gif = gif_input.get('gif')
-
-    client = Minio(
-        "127.0.0.1:7000",
-        access_key="minio",
-        secret_key="minio123",
-        secure=False
-    )
 
     dir_name = str(gif).split(".")[0]
     for item in client.list_objects("frames",recursive=True):
