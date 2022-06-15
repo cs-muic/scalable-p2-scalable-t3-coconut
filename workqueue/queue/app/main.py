@@ -10,16 +10,18 @@ from rq.job import Job
 from minio import Minio
 from pathlib import Path
 import os
+from flask_cors import CORS
 
 from .functions import execute_extract, log_stream
 from .redis_resc import redis_conn, redis_queue_ex
 
 app = Flask(__name__)
+CORS(app)
 
 job_ex = Job
 
 client = Minio(
-    "127.0.0.1:7000",
+    "0.0.0.0:7000",
     access_key="minio",
     secret_key="minio123",
     secure=False
@@ -191,4 +193,4 @@ def delete_gif():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000 ,debug=True)

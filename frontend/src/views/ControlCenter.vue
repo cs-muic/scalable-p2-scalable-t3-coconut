@@ -1,53 +1,57 @@
 <template>
   <v-container>
-    <div class="control-center">
-      <h1>Enter video you want to convert to gif</h1>
-    </div>
-    <div id="app">
-      <v-app id="inspire">
-        <v-form>
-          <v-container>
-            <v-row justify="space-around">
-              <v-col cols="12" sm="6" md="3">
-                <v-text-field label="Video" outlined></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-form>
-        <v-row justify="space-around">
-          <v-btn depressed color="primary">Convert video</v-btn>
-          <v-btn depressed color="primary">Convert all videos</v-btn>
-        </v-row>
-      </v-app>
+    <div class="row" align="center">
+      <div class="col-sm-10">
+        <h1>Videos</h1>
+        <hr />
+        <br /><br />
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Video</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(video, index) in vids" :key="index">
+              <td>{{ video.vdo }}</td>
+              <td>
+                <div class="btn-group" role="group">
+                  <v-btn depressed color="primary">Convert video</v-btn>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <br /><br />
+        <v-btn depressed color="primary">Convert all videos</v-btn>
+      </div>
     </div>
   </v-container>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
-      books: [],
+      vids: [],
     };
   },
   methods: {
-    getBooks() {
-      const path = 'http://localhost:5000/api/all_video';
-      axios.get(path)
-          .then((res) => {
-            this.books = res.data.books;
-          })
-          .catch((error) => {
-            // eslint-disable-next-line
-            console.error(error);
-          });
+    getVids() {
+      const path = "http://0.0.0.0:5000/api/all_video";
+      axios.get(path).then((res) => {
+        this.vids = res.data.vids;
+      });
     },
   },
   created() {
-    this.getBooks();
+    this.getVids();
+  },
+  mounted() {
+    this.getVids();
   },
 };
 </script>
-

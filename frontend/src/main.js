@@ -13,3 +13,13 @@ new Vue({
   vuetify,
   render: (h) => h(App),
 }).$mount("#app");
+
+// import { createApp } from "vue";
+// import App from "./App.vue";
+// import router from "./router";
+//
+// const app = createApp(App);
+// app.config.globalProperties.$redirect = (page) => {
+//   router.push(page);
+// };
+// app.use(router).mount("#app");

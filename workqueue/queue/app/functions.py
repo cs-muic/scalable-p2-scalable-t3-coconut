@@ -18,7 +18,7 @@ from .redis_resc import redis_queue_com, redis_queue_log, redis_conn
 
 
 client = Minio(
-    "127.0.0.1:7000",
+    "0.0.0.0:7000",
     access_key="minio",
     secret_key="minio123",
     secure=False
