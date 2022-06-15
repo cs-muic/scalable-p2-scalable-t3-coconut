@@ -32,13 +32,13 @@ def resource_not_found(exception):
     return jsonify(error=str(exception)), 404
 
 
-@app.route("/")
+@app.route("/api/")
 def home():
     """Show the app is working."""
     return "Running!"
 
 
-@app.route("/enqueue", methods=["POST", "GET"])
+@app.route("/api/enqueue", methods=["POST", "GET"])
 def enqueue():
     """Enqueues a task into redis queue to be processes.
     Returns the job_id."""
@@ -65,7 +65,7 @@ def enqueue():
 
 
 
-@app.route("/check_status")
+@app.route("/api/check_status")
 def check_status():
     """Takes a job_id and checks its status in redis queue."""
     job_id = request.args["job_id"]
@@ -78,7 +78,7 @@ def check_status():
     return jsonify({"job_id": job.id, "job_status": job.get_status()})
 
 
-@app.route("/get_status")
+@app.route("/api/get_status")
 def get_status():
     # job_com = Job.fetch(job_com.id, connection=redis_conn)
     # {job_id_ex: status}
@@ -90,7 +90,7 @@ def get_status():
     return job.result
 
 
-@app.route("/enqueue_bucket", methods=["POST"])
+@app.route("/api/enqueue_bucket", methods=["POST"])
 def enqueue_bucket():
     if request.method == "POST":
         data = request.json
@@ -119,7 +119,7 @@ def enqueue_bucket():
     return jsonify(all_jobs)
 
 
-@app.route("/get_result")
+@app.route("/api/get_result")
 def get_result():
     """Takes a job_id and returns the job's result."""
     job_id = request.args["job_id"]
@@ -137,7 +137,7 @@ def get_result():
     return jsonify(job.result)
 
 
-@app.route("/all_gif", methods=["POST"])
+@app.route("/api/all_gif", methods=["POST"])
 def get_all_gif():
     
     if request.method == "POST":
@@ -156,7 +156,7 @@ def get_all_gif():
     return jsonify(all_gif)
 
 
-@app.route("/all_video")
+@app.route("/api/all_video")
 def get_all_video():
     all_video = {}
 
@@ -170,7 +170,7 @@ def get_all_video():
     return jsonify(all_video)
 
 
-@app.route("/delete_all_gif")
+@app.route("/api/delete_all_gif")
 def delete_all_gif():
 
     for item in client.list_objects("gif",recursive=True):
@@ -179,7 +179,7 @@ def delete_all_gif():
 
     return jsonify({})
 
-@app.route("/delete_gif", methods=["POST"])
+@app.route("/api/delete_gif", methods=["POST"])
 def delete_gif():
     if request.method == "POST":
         data = request.json
