@@ -158,16 +158,17 @@ def get_all_gif():
 
 @app.route("/api/all_video")
 def get_all_video():
-    all_video = {}
+    all_video = []
 
-    count = 1
+    # count = 1
 
     for item in client.list_objects("video",recursive=True):
         if item.object_name.endswith(".mp4") :
-            all_video[f"{count}"] = f"{item.object_name}"
-            count +=1
+            all_video.append({"vdo":item.object_name})
+            # all_video[f"{count}"] = f"{item.object_name}"
+            # count +=1
 
-    return jsonify(all_video)
+    return jsonify({"vids": all_video})
 
 
 @app.route("/api/delete_all_gif")

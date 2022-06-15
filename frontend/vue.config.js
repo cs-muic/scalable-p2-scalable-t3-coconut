@@ -9,7 +9,7 @@ module.exports = {
       "/api": {
         // proxy everything from frontend http://localhost:8080/api/** to backend at http://localhost:8081/api/**
         // that is why all api path on backend should begin with /api
-        target: "http://127.0.0.1:5000",
+        target: "http://127.0.0.1:8000",
       },
     },
   },
