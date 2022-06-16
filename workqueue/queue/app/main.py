@@ -142,31 +142,27 @@ def get_result():
     return jsonify(job.result)
 
 
-@app.route("/api/all_gif", methods=["POST"])
+@app.route("/api/all_gif")
 def get_all_gif():
-    
-    if request.method == "POST":
-        data = request.json
 
-    bucket_name = data.get('bucket')
+    bucket_name = "gif"
     all_gif = []
     pwd = os.getcwd()
 
 
     for item in client.list_objects(bucket_name,recursive=True):
         if item.object_name.endswith(".gif") :
-            all_gif.append({"gif": item.object_name})
-
             image = open(f"{pwd}/output-gif/{item.object_name}", 'rb') #open binary file in read mode
             image_read = image.read()
             image_64_encode = base64.b64encode(image_read)
+            all_gif.append({"gif": str(image_64_encode).split("'")[1]})
 
             filename = item.object_name.split(".gif")[0]
-            f = open(f'{filename}.txt', 'w')
+            f = open(f'{pwd}/base64-gif/{filename}.txt', 'w')
+            f.write(str(image_64_encode).split("'")[1])
             f.close()
-            subprocess.Popen(['echo', f'{image_64_encode}', '>', f'{pwd}/base64-gif/{filename}.txt'])
+            # subprocess.Popen(['echo', f'{image_64_encode}', '>', f'{pwd}/base64-gif/{filename}.txt'])
             # shutil.copy2(f"{pwd}/output-gif/{filename}.txt", f"{pwd}/base64-gif/{filename}.txt")
-
 
     return jsonify({"gifs": all_gif})
 
