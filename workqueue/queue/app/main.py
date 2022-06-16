@@ -154,7 +154,11 @@ def get_all_gif():
     for item in client.list_objects(bucket_name,recursive=True):
         if item.object_name.endswith(".gif") :
             all_gif.append({"gif": item.object_name})
-            shutil.copy2(f"{pwd}/output-gif/{item.object_name}", f"{pwd}/../../frontend/src/gifs/{item.object_name}")
+            import base64 
+            image = open(item.object_name, 'rb') #open binary file in read mode
+            image_read = image.read()
+            image_64_encode = base64.b64encode(image_read)
+            shutil.copy2(f"{pwd}/output-gif/{item.object_name}", f"{pwd}/base64-gif/{image_64_encode}")
 
 
     return jsonify({"gifs": all_gif})
