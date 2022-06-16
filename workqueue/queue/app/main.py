@@ -12,6 +12,7 @@ from pathlib import Path
 import os
 from flask_cors import CORS
 import shutil
+import base64 
 
 from .functions import execute_extract, log_stream
 from .redis_resc import redis_conn, redis_queue_ex
@@ -154,7 +155,6 @@ def get_all_gif():
     for item in client.list_objects(bucket_name,recursive=True):
         if item.object_name.endswith(".gif") :
             all_gif.append({"gif": item.object_name})
-            import base64 
             image = open(item.object_name, 'rb') #open binary file in read mode
             image_read = image.read()
             image_64_encode = base64.b64encode(image_read)
