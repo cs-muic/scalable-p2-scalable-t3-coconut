@@ -35,8 +35,10 @@
           >Convert all videos</v-btn
         >
         <br /><br />
-        <h2></h2>
-        <v-btn class="ma-2" outlined color="indigo">Check Status</v-btn>
+        <v-btn @click="getStatus" class="ma-2" outlined color="indigo"
+          >Check Status</v-btn
+        >
+        <h2>Status: {{ status + " " + video_name }}</h2>
       </div>
     </div>
   </v-container>
