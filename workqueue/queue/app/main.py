@@ -4,6 +4,7 @@
 
 from crypt import methods
 import json
+import subprocess
 from time import sleep
 from flask import Flask, abort, jsonify, request
 from rq.job import Job
@@ -12,8 +13,7 @@ from pathlib import Path
 import os
 from flask_cors import CORS
 import shutil
-import base64
-import subprocess
+import base64 
 
 from .functions import execute_extract, log_stream
 from .redis_resc import redis_conn, redis_queue_ex
