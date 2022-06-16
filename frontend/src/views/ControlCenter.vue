@@ -34,6 +34,9 @@
         <v-btn @click="submit_all" depressed color="primary"
           >Convert all videos</v-btn
         >
+        <br /><br />
+        <h2></h2>
+        <v-btn class="ma-2" outlined color="indigo">Check Status</v-btn>
       </div>
     </div>
   </v-container>
@@ -46,6 +49,8 @@ export default {
   data() {
     return {
       vids: [],
+      status: "",
+      video_name: "",
     };
   },
   methods: {
@@ -72,6 +77,13 @@ export default {
           this.errorMessage = error.message;
           console.error("There was an error!", error);
         });
+    },
+    getStatus() {
+      const path = "http://0.0.0.0:5000/api/get_status";
+      axios.get(path).then((res) => {
+        this.status = res.data.job_status;
+        this.video_name = res.data.vid_name;
+      });
     },
   },
   created() {

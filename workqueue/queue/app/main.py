@@ -146,16 +146,15 @@ def get_all_gif():
         data = request.json
 
     bucket_name = data.get('bucket')
-    all_gif = {}
+    all_gif = []
 
-    count = 1
 
     for item in client.list_objects(bucket_name,recursive=True):
         if item.object_name.endswith(".gif") :
-            all_gif[f"{count}"] = f"{item.object_name}"
-            count +=1
+            all_gif.append({"gif": item.object_name})
 
-    return jsonify(all_gif)
+
+    return jsonify({"gifs": all_gif})
 
 
 @app.route("/api/all_video")
@@ -175,10 +174,11 @@ def get_all_video():
 
 @app.route("/api/delete_all_gif")
 def delete_all_gif():
-
+    pwd = os.getcwd()
     for item in client.list_objects("gif",recursive=True):
         if item.object_name.endswith(".gif") :
             client.remove_object("gif", item.object_name)
+            os.remove( f'{pwd}/output-gif/{item.object_name}')
 
     return jsonify({})
 
@@ -189,6 +189,8 @@ def delete_gif():
 
     gif_name = data.get('gif')
     client.remove_object("gif", gif_name)
+    pwd = os.getcwd()
+    os.remove( f'{pwd}/output-gif/{gif_name}')
     return jsonify({})
 
 
