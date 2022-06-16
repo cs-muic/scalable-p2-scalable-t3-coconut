@@ -116,7 +116,7 @@ def enqueue_bucket():
             "gif": video.split(".")[0] + ".gif"
         }
         job = redis_queue_ex.enqueue(execute_extract, data)
-        all_jobs[job.id] = job.get_status()
+        all_jobs[video] = job.get_status()
 
     return jsonify(all_jobs)
 

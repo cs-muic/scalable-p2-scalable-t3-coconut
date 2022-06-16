@@ -17,14 +17,23 @@
               <td>{{ video.vdo }}</td>
               <td>
                 <div class="btn-group" role="group">
-                  <v-btn depressed color="primary">Convert video</v-btn>
+                  <v-btn
+                    @click="
+                      submit_video(video.vdo, video.vdo.split('.')[0] + '.gif')
+                    "
+                    depressed
+                    color="primary"
+                    >Convert video</v-btn
+                  >
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
         <br /><br />
-        <v-btn depressed color="primary">Convert all videos</v-btn>
+        <v-btn @click="submit_all" depressed color="primary"
+          >Convert all videos</v-btn
+        >
       </div>
     </div>
   </v-container>
@@ -45,6 +54,24 @@ export default {
       axios.get(path).then((res) => {
         this.vids = res.data.vids;
       });
+    },
+    async submit_all() {
+      const bucket = { bucket: "video" };
+      await axios
+        .post("http://127.0.0.1:5000/api/enqueue_bucket", bucket)
+        .catch((error) => {
+          this.errorMessage = error.message;
+          console.error("There was an error!", error);
+        });
+    },
+    async submit_video(vdo, gif_name) {
+      const data = { video: vdo, gif: gif_name };
+      await axios
+        .post("http://127.0.0.1:5000/api/enqueue", data)
+        .catch((error) => {
+          this.errorMessage = error.message;
+          console.error("There was an error!", error);
+        });
     },
   },
   created() {
