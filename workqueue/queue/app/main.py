@@ -162,6 +162,8 @@ def get_all_gif():
             image_64_encode = base64.b64encode(image_read)
 
             filename = item.object_name.split(".gif")[0]
+            f = open(f'{filename}.txt', 'w')
+            f.close()
             subprocess.Popen(['echo', f'{image_64_encode}', '>', f'{pwd}/base64-gif/{filename}.txt'])
             # shutil.copy2(f"{pwd}/output-gif/{filename}.txt", f"{pwd}/base64-gif/{filename}.txt")
 
