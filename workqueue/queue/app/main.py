@@ -4,6 +4,7 @@
 
 from crypt import methods
 import json
+import subprocess
 from time import sleep
 from flask import Flask, abort, jsonify, request
 from rq.job import Job
@@ -155,10 +156,14 @@ def get_all_gif():
     for item in client.list_objects(bucket_name,recursive=True):
         if item.object_name.endswith(".gif") :
             all_gif.append({"gif": item.object_name})
-            image = open(item.object_name, 'rb') #open binary file in read mode
+
+            image = open(f"{pwd}/output-gif/{item.object_name}", 'rb') #open binary file in read mode
             image_read = image.read()
             image_64_encode = base64.b64encode(image_read)
-            shutil.copy2(f"{pwd}/output-gif/{item.object_name}", f"{pwd}/base64-gif/{image_64_encode}")
+
+            filename = item.object_name.split(".gif")[0]
+            subprocess.Popen(['echo', f'{image_64_encode}', '>', f'{pwd}/base64-gif/{filename}.txt'])
+            # shutil.copy2(f"{pwd}/output-gif/{filename}.txt", f"{pwd}/base64-gif/{filename}.txt")
 
 
     return jsonify({"gifs": all_gif})
