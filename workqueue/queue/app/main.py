@@ -11,6 +11,7 @@ from minio import Minio
 from pathlib import Path
 import os
 from flask_cors import CORS
+import shutil
 
 from .functions import execute_extract, log_stream
 from .redis_resc import redis_conn, redis_queue_ex
@@ -147,11 +148,13 @@ def get_all_gif():
 
     bucket_name = data.get('bucket')
     all_gif = []
+    pwd = os.getcwd()
 
 
     for item in client.list_objects(bucket_name,recursive=True):
         if item.object_name.endswith(".gif") :
             all_gif.append({"gif": item.object_name})
+            shutil.copy2(f"{pwd}/output-gif/{item.object_name}", f"{pwd}/../../frontend/src/gifs/{item.object_name}")
 
 
     return jsonify({"gifs": all_gif})
