@@ -12,6 +12,8 @@ from pathlib import Path
 import os
 from flask_cors import CORS
 import shutil
+import base64
+import subprocess
 
 from .functions import execute_extract, log_stream
 from .redis_resc import redis_conn, redis_queue_ex
@@ -154,7 +156,14 @@ def get_all_gif():
     for item in client.list_objects(bucket_name,recursive=True):
         if item.object_name.endswith(".gif") :
             all_gif.append({"gif": item.object_name})
-            shutil.copy2(f"{pwd}/output-gif/{item.object_name}", f"{pwd}/../../frontend/src/gifs/{item.object_name}")
+
+            image = open(f"{pwd}/output-gif/{item.object_name}", 'rb') #open binary file in read mode
+            image_read = image.read()
+            image_64_encode = base64.b64encode(image_read)
+
+            filename = item.object_name.split(".gif")[0]
+            subprocess.Popen(['echo', f'{image_64_encode}', '>', f'{filename}.txt'])
+            shutil.copy2(f"{pwd}/output-gif/{filename}.txt", f"{pwd}/base64-gif/{filename}.txt")
 
 
     return jsonify({"gifs": all_gif})
