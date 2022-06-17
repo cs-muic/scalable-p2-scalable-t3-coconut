@@ -155,12 +155,12 @@ def get_all_gif():
             image = open(f"{pwd}/output-gif/{item.object_name}", 'rb') #open binary file in read mode
             image_read = image.read()
             image_64_encode = base64.b64encode(image_read)
-            all_gif.append({"gif": str(image_64_encode).split("'")[1]})
+            all_gif.append({"gif_base64":str(image_64_encode).split("'")[1], "gif_name":item.object_name})
 
-            filename = item.object_name.split(".gif")[0]
-            f = open(f'{pwd}/base64-gif/{filename}.txt', 'w')
-            f.write(str(image_64_encode).split("'")[1])
-            f.close()
+            # filename = item.object_name.split(".gif")[0]
+            # f = open(f'{pwd}/base64-gif/{filename}.txt', 'w')
+            # f.write(str(image_64_encode).split("'")[1])
+            # f.close()
             # subprocess.Popen(['echo', f'{image_64_encode}', '>', f'{pwd}/base64-gif/{filename}.txt'])
             # shutil.copy2(f"{pwd}/output-gif/{filename}.txt", f"{pwd}/base64-gif/{filename}.txt")
 

@@ -5,7 +5,7 @@
         <router-link to="/control-center">Go to Control Center</router-link>
       </li>
       <li>
-        <router-link to="/display">Go to Display</router-link>
+        <router-link to="/display">Go to Display Room</router-link>
       </li>
     </ul>
   </v-container>

@@ -39,6 +39,8 @@
           >Check Status</v-btn
         >
         <h2>Status: {{ status + " " + video_name }}</h2>
+        <br /><br />
+        <router-link to="/display">Go to Display Room</router-link>
       </div>
     </div>
   </v-container>
