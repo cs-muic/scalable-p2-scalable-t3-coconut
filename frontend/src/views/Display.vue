@@ -10,7 +10,6 @@
         class="d-flex child-flex"
         cols="4"
       >
-        <img :src="`data:image/gif;base64,${each.gif.split('&quot;')}`" />
       </v-col>
     </v-row>
   </v-container>
@@ -29,8 +28,9 @@ export default {
       const path = "http://0.0.0.0:5000/api/all_gif";
       console.log("aaaaa");
       axios.get(path).then((res) => {
-        this.all_gifs = res.data.all_gifs;
+        this.all_gifs = res.data.gifs;
       });
+      console.log(this.all_gifs);
     },
   },
   created() {
